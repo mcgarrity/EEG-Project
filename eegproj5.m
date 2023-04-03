@@ -1,3 +1,4 @@
+clear all
 filenames = ["202302200000_Mon1.mat", "202302201427_Mon1.mat", "202302271521_MonA.mat", "202303271412_MonA.mat"];
 
 Noun_data = [];
@@ -16,8 +17,68 @@ for name = filenames
     Other_data = cat(2, Other_data,OtherNormData);
 end    
 
-TIMEPOINTS = 256;
-ELECTRODES = 16;
+%Get rid of bad noun trials
+[ELECTRODES, nounTrials, TIMEPOINTS] = size(Noun_data);
+
+nounMean = squeeze(mean(mean(Noun_data, 2)));
+nounBadTrials = [];
+
+for t = 1:nounTrials
+    if immse(nounMean, squeeze(mean(Noun_data(:, t, :)))) > 0.25
+        nounBadTrials = [nounBadTrials, t];
+    end
+end
+
+disp(nounBadTrials)
+Noun_data(:, nounBadTrials, :) = [];
+
+%Get rid of bad noun trials
+[ELECTRODES, nounTrials, TIMEPOINTS] = size(Noun_data);
+
+nounMean = squeeze(mean(mean(Noun_data, 2)));
+nounBadTrials = [];
+
+for t = 1:nounTrials
+    if immse(nounMean, squeeze(mean(Noun_data(:, t, :)))) > 0.2
+        nounBadTrials = [nounBadTrials, t];
+    end
+end
+
+disp(nounBadTrials)
+Noun_data(:, nounBadTrials, :) = [];
+
+
+%Get rid of bad other trials
+[ELECTRODES, otherTrials, TIMEPOINTS] = size(Other_data);
+
+otherMean = squeeze(mean(mean(Other_data, 2)));
+otherBadTrials = [];
+
+for t = 1:otherTrials
+    if immse(otherMean, squeeze(mean(Other_data(:, t, :)))) > 0.2
+        otherBadTrials = [otherBadTrials, t];
+    end
+end
+
+Other_data(:, otherBadTrials, :) = [];
+
+
+%Get rid of bad own trials
+[ELECTRODES, ownTrials, TIMEPOINTS] = size(Own_data);
+
+ownMean = squeeze(mean(mean(Own_data, 2)));
+ownBadTrials = [];
+
+for t = 1:ownTrials
+    if immse(ownMean, squeeze(mean(Own_data(:, t, :)))) > 0.2
+        ownBadTrials = [ownBadTrials, t];
+    end
+end
+
+disp(ownBadTrials)
+Own_data(:, ownBadTrials, :) = [];
+
+
 
 %Plot average signal at each electrode for all 3 conditions
 figure
