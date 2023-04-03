@@ -28,37 +28,16 @@ ELECTRODE = 9;
 
 figure
 hold on
-plot(data.timeline, nounOwnSig(ELECTRODE, :))
-plot(data.timeline, mean(squeeze(data.Own(ELECTRODE, :, :))))
-plot(data.timeline, mean(squeeze(data.Noun(ELECTRODE, :, :))))
-title("Own vs Noun " + data.electrodeNames{ELECTRODE} + " Electrode")
+ylim([-1 1])
 
-%Other vs Noun
-
-figure
-hold on
-plot(data.timeline, nounOtherSig(ELECTRODE, :))
-plot(data.timeline, mean(squeeze(data.Own(ELECTRODE, :, :))))
-plot(data.timeline, mean(squeeze(data.Noun(ELECTRODE, :, :))))
-title("Other vs Noun " + data.electrodeNames{ELECTRODE} + " Electrode")
-
-%Other vs Own
-
-figure
-hold on
-plot(data.timeline, otherOwnSig(ELECTRODE, :))
-plot(data.timeline, mean(squeeze(data.Own(ELECTRODE, :, :))))
-plot(data.timeline, mean(squeeze(data.Noun(ELECTRODE, :, :))))
-title("Other vs Own " + data.electrodeNames{ELECTRODE} + " Electrode")
-
-
-figure
-hold on
-ylim([-1.5 1.5])
-
-area(data.timeline,(nounOtherPvals(ELECTRODE, :)<.05),'FaceColor','r')
-area(data.timeline,-(nounOwnPvals(ELECTRODE, :)<.05),'FaceColor','b')
-area(data.timeline,(otherOwnPvals(ELECTRODE, :)<.05)/2,'FaceColor','m')
-area(data.timeline,-(otherOwnPvals(ELECTRODE, :)<.05)/2,'FaceColor','m')
-
-
+for e = 1:ELECTRODES
+    subplot(16, 1, e)
+    hold on
+    area(data.timeline,(nounOtherPvals(e, :)<.05),'FaceColor','r')
+    area(data.timeline,-(nounOwnPvals(e, :)<.05),'FaceColor','b')
+    area(data.timeline,(otherOwnPvals(e, :)<.05)/2,'FaceColor','m')
+    area(data.timeline,-(otherOwnPvals(e, :)<.05)/2,'FaceColor','m')
+    ylabel(data.electrodeNames{e})
+    set(gca,'xtick',[],'ytick',[])
+end
+sgtitle("2023/02/20 00:00")
